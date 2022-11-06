@@ -13,51 +13,53 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("api")
 public class ApiController {
 
     @Autowired
     private UsersRepository usersRepository;
 
-    @PostMapping("/create")
+//    @CrossOrigin("http://localhost:3000")
+    @PostMapping(value = "/create")
     public User createUser(@RequestBody User user) {
         log.info("Пользователь с email {} записан в БД", user.getEmail());
         return usersRepository.save(user);
     }
 
-    @GetMapping("/get/all")
+    @GetMapping("/get")
     public List<User> getUsers() {
         log.info("Получены все пользователи");
         return usersRepository.findAll();
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<User> getUserByEmail(@RequestParam String email) throws ResourceNotFoundException {
+    @GetMapping("/getuser")
+    public User getUserByEmail(@RequestParam String email) throws ResourceNotFoundException {
         User user = usersRepository.findByEmail(email).orElseThrow(
                 () -> new ResourceNotFoundException("Пользователь с таким email не найден"));
         log.info("Получен пользователь {}", email);
-        return ResponseEntity.ok().body(user);
+        return user;
     }
 
     @PutMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestParam String email,
+    public ResponseEntity<User> updateUser(@RequestParam Long id,
                                            @RequestBody User updateDetails) throws ResourceNotFoundException {
-        User user = usersRepository.findByEmail(email).orElseThrow(
-                () -> new ResourceNotFoundException("Пользователь с таким email не найден"));
+        User user = usersRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Пользователь с таким идентификатором не найден"));
 
         Optional.ofNullable(updateDetails.getFirstName()).ifPresent(user::setFirstName);
         Optional.ofNullable(updateDetails.getLastName()).ifPresent(user::setLastName);
         Optional.ofNullable(updateDetails.getEmail()).ifPresent(user::setEmail);
-        log.info("Пользователь обновлен");
+        log.info("Пользователь c идентификатором {} обновлен", id);
         return ResponseEntity.ok(usersRepository.save(user));
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteUser(@RequestParam String email) throws ResourceNotFoundException {
-        User user = usersRepository.findByEmail(email).orElseThrow(
-                () -> new ResourceNotFoundException("Пользователь с таким email не найден"));
-        log.info("Пользователь удален");
+    public ResponseEntity<String> deleteUser(@RequestParam Long id) throws ResourceNotFoundException {
+        User user = usersRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Пользователь с таким идентификатором не найден"));
+        log.info("Пользователь с идентификатором {} удален", id);
         usersRepository.delete(user);
-        return ResponseEntity.ok(String.format("Пользователь %s удален", email));
+        return ResponseEntity.ok(String.format("Пользователь с идентификатором %s удален", id));
     }
 }
