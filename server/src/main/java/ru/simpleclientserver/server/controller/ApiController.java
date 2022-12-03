@@ -20,7 +20,6 @@ public class ApiController {
     @Autowired
     private UsersRepository usersRepository;
 
-//    @CrossOrigin("http://localhost:3000")
     @PostMapping(value = "/create")
     public User createUser(@RequestBody User user) {
         log.info("Пользователь с email {} записан в БД", user.getEmail());
