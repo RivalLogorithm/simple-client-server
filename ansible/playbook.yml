@@ -11,6 +11,7 @@
       vars:
         packages:
           - docker-compose
+          - python3-pip
     - name: Install Python Docker Module
       pip:
         name: docker
