@@ -11,6 +11,9 @@
       vars:
         packages:
           - docker-compose
+    - name: Install Python Docker Module
+      pip:
+        name: docker
     - name: Copy Docker Compose
       copy:
         src: ../docker
