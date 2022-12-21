@@ -21,7 +21,7 @@
     - name: Copy Docker Compose
       copy:
         src: ../docker
-        dest: /home/slave/docker
+        dest: /home/slave
     - name: Run Container
       docker_compose:
         project_src: /home/slave/docker
