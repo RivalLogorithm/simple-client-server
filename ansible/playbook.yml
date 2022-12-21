@@ -22,6 +22,14 @@
       copy:
         src: ../docker
         dest: /home/slave
+    - name: Stop Containers
+      docker_compose:
+        project_src: /home/slave/docker
+        stopped: true
+    - name: Update Images
+      docker_compose:
+        project_src: /home/slave/docker
+        pull: true
     - name: Run Container
       docker_compose:
         project_src: /home/slave/docker
