@@ -10,11 +10,14 @@
         update_cache: 'yes'
       vars:
         packages:
-          - docker-compose
           - python3-pip
     - name: Install Python Docker Module
       pip:
-        name: docker
+        name: '{{ packages }}'
+      vars:
+        packages:
+          - docker
+          - docker-compose
     - name: Copy Docker Compose
       copy:
         src: ../docker
