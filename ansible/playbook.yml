@@ -13,7 +13,7 @@
           - docker-compose
     - name: Copy Docker Compose
       copy:
-        src: ./docker
+        src: ../docker
         dest: /home/slave/docker
     - name: Run Container
       docker_compose:
