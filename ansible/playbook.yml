@@ -1,0 +1,24 @@
+- hosts: staging_servers
+  become: 'yes'
+  tasks:
+    - name: Update apt cache
+      apt: update_cache=yes cache_valid_time=3600
+    - name: Install dependencies
+      apt:
+        name: '{{ packages }}'
+        state: present
+        update_cache: 'yes'
+      vars:
+        packages:
+          - docker-compose
+    - name: Copy Docker Compose
+      copy:
+        src: docker
+        dest: /home/slave/docker
+    - name: Run Container
+      docker_compose:
+        project_src: /home/slave/docker
+      register: output
+    
+    - debug:
+        var: output
