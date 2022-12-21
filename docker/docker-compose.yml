@@ -1,0 +1,33 @@
+version: "3.5"
+
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres:11
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: qwerty
+    volumes:
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  client:
+    container_name: client_container
+    image: rivallogorithm/scs-client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - server
+    command: npm start
+
+  server:
+    container_name: server_container
+    image: rivallogorithm/scs-server
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    depends_on:
+      - postgres
+    command: java -jar /server/target/server-0.0.1-SNAPSHOT.jar
